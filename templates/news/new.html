@@ -1,0 +1,23 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock title %}
+
+{% block content %}
+    <h1>{{ post.title|censor }}</h1>
+    <p>Категории:
+        {% for category in post.category.all %}
+            <a href="{% url 'category_posts' category.id %}">{{ category.name }}</a>
+        {% empty %}
+            Нет категорий
+        {% endfor %}
+    </p>
+
+    <h3>Дата публикации: {{ post.timestamp|date:"d.m.Y" }}</h3>
+    <hr>
+    <p>{{ post.content|censor }}</p>
+    <hr>
+    <a href="/news">Назад к списку новостей</a>
+{% endblock content %}

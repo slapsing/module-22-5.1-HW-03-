@@ -1,0 +1,49 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+    {{ author_page.user.username }}
+{% endblock title %}
+
+{% block content %}
+    <div class="card mb-4" style="max-width: 600px; margin: auto;">
+        <div class="card-body">
+            <h2 class="card-title">{{ author_page.user.username }}</h2>
+            <p><strong>Рейтинг:</strong> {{ author_rating }}</p>
+            <p><strong>Количество публикаций:</strong> {{ post_count }}</p>
+            {% if user.is_authenticated and author_page and user != author_page.user %}
+                {% if user in author_page.subscribers.all %}
+                    <form method="post" action="{% url 'subscription' 'unsubscribe' 'author' author_page.pk %}">
+                        {% csrf_token %}
+                        <button type="submit">Отписаться</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'subscription' 'subscribe' 'author' author_page.pk %}">
+                        {% csrf_token %}
+                        <button type="submit">Подписаться</button>
+                    </form>
+                {% endif %}
+            {% elif not user.is_authenticated %}
+                <p>Войдите в аккаунт, чтобы подписаться на автора.</p>
+            {% endif %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
+    <h3 class="author_detail">Публикации автора</h3>
+    <div class="list-group">
+        {% for post in posts %}
+            <a href="{{ post.get_absolute_url }}" class="list-group-item list-group-item-action">
+                <strong>{{ post.title }}</strong> — {{ post.timestamp|date:"d.m.Y" }}
+            </a>
+        {% empty %}
+            <p class="text-center">У этого автора пока нет публикаций.</p>
+        {% endfor %}
+    </div>
+
+{% endblock content %}

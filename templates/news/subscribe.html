@@ -1,0 +1,17 @@
+{% extends 'flatpages/default.html' %}
+
+<form method="post" action="{% url 'subscribe' category.id %}">
+
+    {% csrf_token %}
+    <input type="hidden" name="category_id" value="{{ category.id }}">
+    <input type="hidden" name="next" value="{{ request.path }}">
+    {% if request.user.is_authenticated %}
+        {% if request.user in category.subscribers.all %}
+            <button type="submit">Отписаться</button>
+        {% else %}
+            <button type="submit">Подписаться</button>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'account_login' %}?next={{ request.path }}">Войдите, чтобы подписаться</a>
+    {% endif %}
+</form>

@@ -1,0 +1,73 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}Категория: {{ category.name }}{% endblock %}
+
+{% block content %}
+    <h1>Категория: {{ category.name }}</h1>
+
+    {% if posts %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Заголовок</th>
+                <th>Дата</th>
+                <th>Автор</th>
+                <th>Категория</th>
+                <th>Текст</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for post in posts %}
+                <tr>
+                    <td><a href="{% url 'post_detail' post.pk %}">{{ post.title|censor }}</a></td>
+                    <td>{{ post.timestamp|date:"d.m.Y" }}</td>
+                    <td>
+                        <a href="{% url 'author_detail' post.author.pk %}">
+                            {{ post.author.user.username }}
+                        </a>
+                    </td>
+                    <td>
+                        {% with first_cat=post.category.all|first %}
+                            {% if first_cat %}
+                                <a href="{% url 'category_posts' first_cat.id %}">{{ first_cat.name }}</a>
+                            {% else %}
+                                Без категории
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>{{ post.content|censor|truncatewords:20 }}</td>
+                </tr>
+            {% endfor %}
+            {% if user.is_authenticated %}
+                {% if user in category.subscribers.all %}
+                    <form method="post" action="{% url 'subscription' 'unsubscribe' 'category' category.id %}"
+                          style="margin-bottom: 10px;">
+                        {% csrf_token %}
+                        <button type="submit">Отписаться</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'subscription' 'subscribe' 'category' category.id %}"
+                          style="margin-bottom: 10px;">
+                        {% csrf_token %}
+                        <button type="submit">Подписаться</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+
+            </tbody>
+        </table>
+
+    {% else %}
+        <p>Нет новостей в этой категории.</p>
+    {% endif %}
+{% endblock %}

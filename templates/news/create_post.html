@@ -1,0 +1,27 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+    <h2>Создать публикацию</h2>
+
+    <div style="margin-bottom: 20px;">
+        <a href="?type=news" class="btn btn-primary" style="margin-right: 10px;">Создать новость</a>
+        <a href="?type=article" class="btn btn-success">Создать статью</a>
+    </div>
+
+    {% if form %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="post_type" value="{{ post_type }}">
+            {% if can_create %}
+                <button type="submit">Создать</button>
+            {% else %}
+                <button type="submit" disabled>Достигнут лимит 3 публикации в сутки</button>
+                <p style="color:red;">Вы уже опубликовали {{ posts_last_24h }} публикации за последние 24 часа.
+                </p>
+            {% endif %}
+        </form>
+    {% else %}
+        <p>Выберите тип публикации сверху.</p>
+    {% endif %}
+{% endblock %}

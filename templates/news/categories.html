@@ -1,0 +1,36 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+    Категории новостей
+{% endblock title %}
+
+{% block content %}
+    <h1>Категории</h1>
+    <div style="display: flex; flex-wrap: wrap; gap: 100px;">
+        {% for category in categories %}
+            <div style="
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                padding: 15px;
+                min-width: 150px;
+                width: fit-content;
+                max-width: 300px;
+                min-height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            ">
+                <h3 style="margin: 0 0 15px 0; word-break: break-word;">{{ category.name }}</h3>
+
+                <a href="{% url 'category_posts' category.id %}"
+                   style="display: inline-block; padding: 8px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">
+                    Перейти
+                </a>
+            </div>
+        {% empty %}
+            <p>Категорий нет.</p>
+        {% endfor %}
+    </div>
+{% endblock content %}

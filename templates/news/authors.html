@@ -1,0 +1,16 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}Авторы{% endblock title %}
+
+{% block content %}
+    <h1 style="text-align:center;">Авторы</h1>
+
+    <div class="author-container" style="max-width: 600px; margin: auto;">
+        {% for author in authors %}
+            <div class="d-flex justify-content-between align-items-center border rounded p-2 my-2">
+                <div style="font-size: 1.2em;">{{ author.user.get_full_name|default:author.user.username }}</div>
+                <a href="{% url 'author_detail' author.pk %}" class="btn btn-primary btn-sm">Посмотреть публикации</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

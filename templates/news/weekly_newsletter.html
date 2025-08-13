@@ -1,0 +1,12 @@
+<p>Здравствуйте, {{ username }}!</p>
+<p>Вот новые статьи из категории "{{ category.name }}" за прошедшую неделю:</p>
+<ul>
+    {% for post in posts %}
+        <li>
+            <a href="{{ site_url }}{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+            <small>({{ post.timestamp|date:"d.m.Y" }})</small>
+        </li>
+    {% endfor %}
+</ul>
+<p>Приятного чтения!</p>
+<p><a href="{{ site_url }}{% url 'news_list' %}">Перейти к списку новостей</a></p>
